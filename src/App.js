@@ -1,23 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import {  BrowserRouter, Routes ,Route} from "react-router-dom";
+import {useState , useEffect} from 'react';
+import Navbar from "./Navbar";
+import Home from './Home';
+import  AddAlbum  from './AddAlbum';
+import Update from './Update';
 
-function App() {
+
+const App = () => {
+
+  const [data , setData] = useState([]);
+
+  useEffect(()=> {
+     const url = 'https://jsonplaceholder.typicode.com/albums';
+
+     fetch(url)
+     .then(response => response.json())
+     .then(data => {                               //this 'data' is the array of all fetched albums id and title .
+        setData(data);
+     });
+  }, []);
+
+  // const handleChangeInData = (newData) => {
+  //   setData(newData);
+  // }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={ <Home data={data} setData={setData} />} />
+          <Route path="/addAlbum" element={ <AddAlbum data={data} setData={setData}/>} />
+          <Route path="/update/:id" element={ <Update data={data} setData={setData}/>} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
